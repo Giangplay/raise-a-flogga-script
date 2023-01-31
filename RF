@@ -1,0 +1,99 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Raise a floppa 2", HidePremium = false, SaveConfig = true, IntroEnabled = false"})
+
+local Tab = Window:MakeTab({
+	Name = "combat",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Section = Tab:AddSection({
+	Name = "Auto"
+})
+
+Tab:AddToggle({
+	Name = "auto clicker (clicker flogga)",
+	Default = false,
+	Callback = function(Value)
+		Toggle_AutoClick = Value
+            while Toggle_AutoClick and task.wait() do
+            	fireclickdetector(workspace.Floppa.ClickDetector)
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "auto Collect Cash",
+	Default = false,
+	Callback = function(Value)
+		Toggle_AutoCollectCash = Value
+            while Toggle_AutoCollectCash and task.wait() do
+            	for _,v in ipairs(workspace:GetChildren()) do
+            		if v.Name == "Money" or v.Name == "Money Bag" then
+            			firetouchinterest(v, returnHRP(), 0)
+            			wait()
+            			firetouchinterest(v, returnHRP(), 1)
+					end
+				end
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "auto unlock item",
+	Default = false,
+	Callback = function(Value)
+		Toggle_AutoUnlockItems = Value
+            while Toggle_AutoUnlockItems and task.wait() do
+            	for _,v in ipairs(LocalPlayer.PlayerGui.PlayerUI["the_interwebs"].Unlocks:GetChildren()) do
+            		if v:IsA("Frame") and not v.Name:match("Food") and not v.Name:match("food") then
+            			task.wait(.2)
+						game:GetService("ReplicatedStorage").Events.Unlock:FireServer(table.unpack({
+							[1] = v.Name,
+							[2] = "the_interwebs",
+						}))
+					end
+				end
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "auto feer flogga",
+	Default = false,
+	Callback = function(Value)
+		Toggle_AutoFeedFloppa = Value
+            while Toggle_AutoFeedFloppa and task.wait() do
+            	Hunger = string.gsub(workspace.Floppa.Display.Frame.Hunger.Text, "%D", "")
+            	Hunger = tonumber(Hunger)
+            	if Hunger <= 20 then
+					game:GetService("ReplicatedStorage").Events.Unlock:FireServer(table.unpack({
+						[1] = "Floppa Food",
+						[2] = "the_interwebs",
+					}))
+					task.wait(2)
+					for i =1,10 do
+						task.wait()
+						returnHRP().CFrame = workspace["Key Parts"].Bowl.Part.CFrame
+						fireproximityprompt(workspace["Key Parts"].Bowl.Part.ProximityPrompt)
+					end
+				end
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "auto no poop (flogga poop)",
+	Default = false,
+	Callback = function(Value)
+		Toggle_AutoCleanPoop = Value
+            while Toggle_AutoCleanPoop and task.wait() do
+            	for _,v in ipairs(workspace["Key Parts"]["Litter Box"]:GetChildren()) do
+            		if v.Name == "Poop" then
+            			returnHRP().CFrame = v.PoopPart.CFrame
+            			fireproximityprompt(v.ProximityPrompt)
+					end
+				end
+			end
+	end    
+})
