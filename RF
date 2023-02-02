@@ -1,5 +1,43 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Raise a floppa 2", HidePremium = false, SaveConfig = true, IntroEnabled = false"})
+local Window = OrionLib:MakeWindow({Name = "Raise a floppa 2", HidePremium = false, SaveConfig = true, IntroEnabled = false, ConfigFolder = "Raise a flogga"})
+
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+repeat
+    task.wait()
+until game:GetService("Players") and game:GetService("Workspace") and game:GetService("ReplicatedStorage") and
+    game:GetService("UserInputService")
+
+getgenv().SecureMode = false
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local At_Feed = 75
+local At_Pet = 50
+loadstring(game:HttpGet("https://pastebin.com/raw/tUUGAeaH", true))()
+
+local function returnHRP()
+    if not LocalPlayer.Character then
+        return
+    end
+    if not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        return
+    else
+        return LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    end
+end
+local function returnHUM()
+    if not LocalPlayer.Character then
+        return
+    end
+    if not LocalPlayer.Character:FindFirstChild("Humanoid") then
+        return
+    else
+        return LocalPlayer.Character:FindFirstChild("Humanoid")
+    end
+end
+repeat
+    task.wait()
+until returnHRP() and returnHUM()
 
 local Tab = Window:MakeTab({
 	Name = "combat",
@@ -7,12 +45,8 @@ local Tab = Window:MakeTab({
 	PremiumOnly = false
 })
 
-local Section = Tab:AddSection({
-	Name = "Auto"
-})
-
 Tab:AddToggle({
-	Name = "auto clicker (clicker flogga)",
+	Name = "Auto Clicker",
 	Default = false,
 	Callback = function(Value)
 		Toggle_AutoClick = Value
@@ -23,8 +57,9 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-	Name = "auto Collect Cash",
+	Name = "Auto Collect Cash",
 	Default = false,
+	Flag = "Toggle1",
 	Callback = function(Value)
 		Toggle_AutoCollectCash = Value
             while Toggle_AutoCollectCash and task.wait() do
@@ -40,27 +75,27 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-	Name = "auto unlock item",
+	Name = "Auto Claim Rent",
 	Default = false,
+	Flag = "Toggle1",
 	Callback = function(Value)
-		Toggle_AutoUnlockItems = Value
-            while Toggle_AutoUnlockItems and task.wait() do
-            	for _,v in ipairs(LocalPlayer.PlayerGui.PlayerUI["the_interwebs"].Unlocks:GetChildren()) do
-            		if v:IsA("Frame") and not v.Name:match("Food") and not v.Name:match("food") then
-            			task.wait(.2)
-						game:GetService("ReplicatedStorage").Events.Unlock:FireServer(table.unpack({
-							[1] = v.Name,
-							[2] = "the_interwebs",
-						}))
-					end
+		Toggle_AutoClaimRent = Value
+            while Toggle_AutoClaimRent and task.wait() do
+				game:GetService("ReplicatedStorage").Events["Collect Rent"]:FireServer()
+				task.wait(2)
+				if workspace:FindFirstChild("Rent") then
+					firetouchinterest(workspace:FindFirstChild("Rent"), returnHRP(), 0)
+					firetouchinterest(workspace:FindFirstChild("Rent"), returnHRP(), 1)
 				end
 			end
 	end    
 })
 
+
 Tab:AddToggle({
-	Name = "auto feer flogga",
+	Name = "Auto Feed Flogga",
 	Default = false,
+	Flag = "Toggle1",
 	Callback = function(Value)
 		Toggle_AutoFeedFloppa = Value
             while Toggle_AutoFeedFloppa and task.wait() do
@@ -83,8 +118,9 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-	Name = "auto no poop (flogga poop)",
+	Name = "Auto Clean Poop",
 	Default = false,
+	Flag = "Toggle1",
 	Callback = function(Value)
 		Toggle_AutoCleanPoop = Value
             while Toggle_AutoCleanPoop and task.wait() do
@@ -92,6 +128,86 @@ Tab:AddToggle({
             		if v.Name == "Poop" then
             			returnHRP().CFrame = v.PoopPart.CFrame
             			fireproximityprompt(v.ProximityPrompt)
+					end
+				end
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto Fet Flogga",
+	Default = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		Toggle_AutoPetFloppaGC = Value
+            while Toggle_AutoPetFloppaGC and task.wait() do
+            	Happiness = string.gsub(LocalPlayer.PlayerGui.FloppaUI.Frame.Floppa.Happiness.Percentage.Text, "%D", "")
+            	Happiness = tonumber(Happiness)
+            	if Happiness <= At_Pet then
+            		for i=1,20 do
+            			returnHRP().CFrame = workspace.Floppa.HumanoidRootPart.CFrame
+						task.wait()
+						fireproximityprompt(workspace.Floppa.HumanoidRootPart.ProximityPrompt)
+					end
+				end
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto Clean Poop",
+	Default = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		Toggle_AutoCleanPoop = Value
+            while Toggle_AutoCleanPoop and task.wait() do
+            	for _,v in ipairs(workspace["Key Parts"]["Litter Box"]:GetChildren()) do
+            		if v.Name == "Poop" then
+            			returnHRP().CFrame = v.PoopPart.CFrame
+            			fireproximityprompt(v.ProximityPrompt)
+					end
+				end
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto Feed Floppa Grilled Cheese",
+	Default = false,
+	Flag = "Toggle1",
+	Callback = function(Value)
+		Toggle_AutoFeedFloppa = Value
+            while Toggle_AutoFeedFloppa and task.wait() do
+            	Happiness = string.gsub(LocalPlayer.PlayerGui.FloppaUI.Frame.Floppa.Happiness.Percentage.Text, "%D", "")
+            	Happiness = tonumber(Happiness)
+            	if Happiness <= At_Feed then
+            		task.wait(4)
+            		Bread = workspace.Village.FoodMarket["Bread Crate"].Crate["Empty Display Crate"].Primary
+            		Cheese = workspace.Village.FoodMarket.Cheese
+            		returnHRP().CFrame = Bread.CFrame*CFrame.new(0,4,0)
+					task.wait(.2)
+					fireproximityprompt(Bread.ProximityPrompt)
+					returnHRP().CFrame = Cheese.CFrame*CFrame.new(0,4,0)
+					task.wait(.2)
+					fireproximityprompt(Cheese.ProximityPrompt)
+					task.wait(1)
+					game:GetService("ReplicatedStorage").Events.Cooking:FireServer(table.unpack({
+						[1] = "Add Ingredient",
+						[2] = "Bread",
+					}))
+					game:GetService("ReplicatedStorage").Events.Cooking:FireServer(table.unpack({    [1] = "Add Ingredient",    [2] = "Cheese",}))
+					game:GetService("ReplicatedStorage").Events.Cooking:FireServer(table.unpack({    [1] = "Change Temperature",    [2] = 3,}))
+					game:GetService("ReplicatedStorage").Events.Cooking:FireServer("Cook")
+					
+					task.wait(20)
+					firetouchinterest(workspace:WaitForChild("Grilled Cheese").Handle, returnHRP(), 0)
+					firetouchinterest(workspace:WaitForChild("Grilled Cheese").Handle, returnHRP(), 1)
+					task.wait(0.5)
+					
+					for i=1,20 do
+            			returnHRP().CFrame = workspace.Floppa.HumanoidRootPart.CFrame
+						task.wait()
+						fireproximityprompt(workspace.Floppa.HumanoidRootPart.ProximityPrompt)
 					end
 				end
 			end
