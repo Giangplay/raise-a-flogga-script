@@ -1,6 +1,8 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local Window = OrionLib:MakeWindow({Name = "Raise a floppa 2", HidePremium = false, SaveConfig = true, IntroEnabled = false, ConfigFolder = "Raise a flogga"})
 
+---Game---
+
 if not game:IsLoaded() then
     game.Loaded:Wait()
 end
@@ -14,6 +16,8 @@ local LocalPlayer = game:GetService("Players").LocalPlayer
 local At_Feed = 75
 local At_Pet = 50
 loadstring(game:HttpGet("https://pastebin.com/raw/tUUGAeaH", true))()
+
+---local function---
 
 local function returnHRP()
     if not LocalPlayer.Character then
@@ -40,9 +44,13 @@ repeat
 until returnHRP() and returnHUM()
 
 local Tab = Window:MakeTab({
-	Name = "combat",
+	Name = "autofarm",
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
+})
+
+local Section = Tab:AddSection({
+	Name = "main"
 })
 
 Tab:AddToggle({
@@ -52,6 +60,25 @@ Tab:AddToggle({
 		Toggle_AutoClick = Value
             while Toggle_AutoClick and task.wait() do
             	fireclickdetector(workspace.Floppa.ClickDetector)
+			end
+	end    
+})
+
+Tab:AddToggle({
+	Name = "Auto Unlock Item",
+	Default = false,
+	Callback = function(Value)
+		Toggle_AutoUnlockItems = Value
+            while Toggle_AutoUnlockItems and task.wait() do
+            	for _,v in ipairs(LocalPlayer.PlayerGui.PlayerUI["the_interwebs"].Unlocks:GetChildren()) do
+            		if v:IsA("Frame") and not v.Name:match("Food") and not v.Name:match("food") then
+            			task.wait(.2)
+						game:GetService("ReplicatedStorage").Events.Unlock:FireServer(table.unpack({
+							[1] = v.Name,
+							[2] = "the_interwebs",
+						}))
+					end
+				end
 			end
 	end    
 })
@@ -155,23 +182,6 @@ Tab:AddToggle({
 })
 
 Tab:AddToggle({
-	Name = "Auto Clean Poop",
-	Default = false,
-	Flag = "Toggle1",
-	Callback = function(Value)
-		Toggle_AutoCleanPoop = Value
-            while Toggle_AutoCleanPoop and task.wait() do
-            	for _,v in ipairs(workspace["Key Parts"]["Litter Box"]:GetChildren()) do
-            		if v.Name == "Poop" then
-            			returnHRP().CFrame = v.PoopPart.CFrame
-            			fireproximityprompt(v.ProximityPrompt)
-					end
-				end
-			end
-	end    
-})
-
-Tab:AddToggle({
 	Name = "Auto Feed Floppa Grilled Cheese",
 	Default = false,
 	Flag = "Toggle1",
@@ -211,5 +221,33 @@ Tab:AddToggle({
 					end
 				end
 			end
+	end    
+})
+
+Tab:AddSlider({
+	Name = "At Pet",
+	Min = 0,
+	Max = 75,
+	Default = 50,
+	Flag = "Slider1",
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 5,
+	ValueName = "%",
+	Callback = function(Value)
+		At_Pet = Value
+	end    
+})
+
+Tab:AddSlider({
+	Name = "At Peed",
+	Min = 0,
+	Max = 100,
+	Default = 75,
+	Flag = "Slider1",
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 5,
+	ValueName = "%",
+	Callback = function(Value)
+		At_Feed = Value
 	end    
 })
